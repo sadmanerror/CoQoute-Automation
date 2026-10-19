@@ -1,0 +1,43 @@
+name: 24/7 Trending News Automation
+
+on:
+  schedule:
+    # Runs automatically every 30 minutes, 24/7
+    - cron: '*/30 * * * *'
+  # Allows manual triggers anytime from GitHub UI
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run-news-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install feedparser requests groq
+
+      - name: Run News Bot
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python bot.py
+
+      - name: Save seen URLs cache
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add seen_urls.txt
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update seen URLs cache" && git push)
