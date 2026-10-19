@@ -2,9 +2,7 @@ name: 24/7 Trending News Automation
 
 on:
   schedule:
-    # Runs automatically every 30 minutes, 24/7
     - cron: '*/30 * * * *'
-  # Allows manual triggers anytime from GitHub UI
   workflow_dispatch:
 
 permissions:
@@ -17,6 +15,8 @@ jobs:
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -40,4 +40,8 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add seen_urls.txt
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update seen URLs cache" && git push)
+          if ! git diff --quiet --cached; then
+            git commit -m "Auto-update seen URLs cache"
+            git pull --rebase origin main
+            git push origin main
+          fi
