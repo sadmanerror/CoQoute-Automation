@@ -5,11 +5,10 @@ import requests
 from groq import Groq
 
 # Load credentials from environment variables (GitHub Secrets)
-TELEGRAM_BOT_TOKEN = os.environ.get(
-    "TELEGRAM_BOT_TOKEN", "8812845138:AAfZbE0wsZTtdQ-MRdCTbctWgH38LzpMkjc"
-)
-TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "-1004413991519")
-GROQ_API_KEY = os.environ.get("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")
+# Load credentials from environment variables (GitHub Secrets)
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
+TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 
 TARGET_POST_COUNT = 30  # Post up to 30 items per cycle
 
